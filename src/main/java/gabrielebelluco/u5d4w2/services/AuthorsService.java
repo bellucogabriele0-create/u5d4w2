@@ -1,5 +1,7 @@
 package gabrielebelluco.u5d4w2.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import gabrielebelluco.u5d4w2.entities.Author;
 import gabrielebelluco.u5d4w2.exceptions.BadRequestException;
 import gabrielebelluco.u5d4w2.exceptions.NotFoundException;
@@ -10,12 +12,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
 
 @Service
 public class AuthorsService {
 
+    private final AuthorsRepository authorsRepository;
+    private final Cloudinary cloudinaryUploader;
+
+
     @Autowired
-    private AuthorsRepository authorsRepository;
+    public AuthorsService(AuthorsRepository authorsRepository, Cloudinary cloudinaryUploader) {
+        this.authorsRepository = authorsRepository;
+        this.cloudinaryUploader = cloudinaryUploader;
+    }
 
     public Author save(Author body) {
         authorsRepository.findByEmail(body.getEmail()).ifPresent(user -> {
@@ -49,5 +62,19 @@ public class AuthorsService {
         found.setDateOfBirth(body.getDateOfBirth());
         found.setAvatar(body.getAvatar());
         return authorsRepository.save(found);
+    }
+
+
+    public String uploadAvatar(MultipartFile file) {
+        try {
+            Map result = cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+
+            String imageUrl = (String) result.get("secure_url");
+            return imageUrl;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

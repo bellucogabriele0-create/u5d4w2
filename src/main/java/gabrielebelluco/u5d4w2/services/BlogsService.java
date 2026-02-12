@@ -3,7 +3,7 @@ package gabrielebelluco.u5d4w2.services;
 import gabrielebelluco.u5d4w2.entities.Author;
 import gabrielebelluco.u5d4w2.entities.Blogpost;
 import gabrielebelluco.u5d4w2.exceptions.NotFoundException;
-import gabrielebelluco.u5d4w2.payloads.NewBlogPostPayload;
+import gabrielebelluco.u5d4w2.payloads.NewBlogPostDTO;
 import gabrielebelluco.u5d4w2.repositories.BlogsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,12 +12,16 @@ import java.util.List;
 
 @Service
 public class BlogsService {
-    @Autowired
-    private BlogsRepository blogsRepository;
-    @Autowired
-    private AuthorsService authorsService;
+    private final BlogsRepository blogsRepository;
+    private final AuthorsService authorsService;
 
-    public Blogpost save(NewBlogPostPayload body) {
+    @Autowired
+    public BlogsService(BlogsRepository blogsRepository, AuthorsService authorsService) {
+        this.blogsRepository = blogsRepository;
+        this.authorsService = authorsService;
+    }
+
+    public Blogpost save(NewBlogPostDTO body) {
         Author author = authorsService.findById(body.getAuthorId());
         Blogpost newBlogPost = new Blogpost();
         newBlogPost.setReadingTime(body.getReadingTime());
@@ -42,7 +46,7 @@ public class BlogsService {
         blogsRepository.delete(found);
     }
 
-    public Blogpost findByIdAndUpdate(int id, NewBlogPostPayload body) {
+    public Blogpost findByIdAndUpdate(int id, NewBlogPostDTO body) {
         Blogpost found = this.findById(id);
 
         found.setReadingTime(body.getReadingTime());
@@ -61,5 +65,7 @@ public class BlogsService {
     public List<Blogpost> findByAuthor(int authorId) {
         Author author = authorsService.findById(authorId);
         return blogsRepository.findByAuthor(author);
+
+
     }
 }

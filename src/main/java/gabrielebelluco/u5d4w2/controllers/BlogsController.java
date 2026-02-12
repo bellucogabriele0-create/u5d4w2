@@ -1,7 +1,7 @@
 package gabrielebelluco.u5d4w2.controllers;
 
 import gabrielebelluco.u5d4w2.entities.Blogpost;
-import gabrielebelluco.u5d4w2.payloads.NewBlogPostPayload;
+import gabrielebelluco.u5d4w2.payloads.NewBlogPostDTO;
 import gabrielebelluco.u5d4w2.services.BlogsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ public class BlogsController {
     // 1. - POST http://localhost:3001/blogs (+ req.body)
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED) // <-- 201
-    public Blogpost saveBlog(@RequestBody NewBlogPostPayload body) {
+    public Blogpost saveBlog(@RequestBody NewBlogPostDTO body) {
         return blogsService.save(body);
     }
 
@@ -37,7 +37,7 @@ public class BlogsController {
 
     // 4. - PUT http://localhost:3001/blogs/{id} (+ req.body)
     @PutMapping("/{blogId}")
-    public Blogpost findAndUpdate(@PathVariable int blogId, @RequestBody NewBlogPostPayload body) {
+    public Blogpost findAndUpdate(@PathVariable int blogId, @RequestBody NewBlogPostDTO body) {
         return blogsService.findByIdAndUpdate(blogId, body);
     }
 
@@ -47,4 +47,6 @@ public class BlogsController {
     public void findAndDelete(@PathVariable int blogId) {
         blogsService.findByIdAndDelete(blogId);
     }
+
+
 }
