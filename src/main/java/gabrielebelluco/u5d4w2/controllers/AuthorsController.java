@@ -49,13 +49,20 @@ public class AuthorsController {
         authorsService.findByIdAndDelete(authorId);
     }
 
+//    @PatchMapping("/{authorId}/avatar")
+//    public String uploadImage(@RequestParam("profile_picture") MultipartFile file, @PathVariable UUID authorId) {
+//        // profile_picture deve corrispondere ESATTAMENTE al campo del Form Data dove viene inserito il file
+//        // se così non è il file non verrà trovato
+//
+//        String url = this.authorsService.uploadAvatar(file);
+//        return url;
+//    }
+
     @PatchMapping("/{authorId}/avatar")
-    public String uploadImage(@RequestParam("profile_picture") MultipartFile file, @PathVariable UUID authorId) {
+    public void uploadImage(@RequestParam("profile_picture") MultipartFile file, @PathVariable UUID authorId) {
         // profile_picture deve corrispondere ESATTAMENTE al campo del Form Data dove viene inserito il file
         // se così non è il file non verrà trovato
 
         String url = this.authorsService.uploadAvatar(file);
-
-        return url;
     }
 }
